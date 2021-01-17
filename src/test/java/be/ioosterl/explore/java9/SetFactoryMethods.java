@@ -45,4 +45,10 @@ public class SetFactoryMethods {
     set.forEach(w -> w.reWrap(w.unWrap()+1));
     assertThat(set).extracting("value").containsOnly(2,3);
   }
+
+  @Test
+  void setOfWithNull() {
+    assertThatExceptionOfType(NullPointerException.class).isThrownBy(() -> Set.of(1,2, null, 3));
+  }
+
 }
