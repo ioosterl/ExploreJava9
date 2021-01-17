@@ -16,17 +16,17 @@ public class ListFactoryMethods {
 
   @Test
   void listOfMutability() {
-    List<Wrapper> wrapperList = List.of(new Wrapper(1), new Wrapper(2), new Wrapper(3));
-    assertThat(wrapperList).hasSize(3);
+    List<Wrap<Integer>> wrappedIntegerList = List.of(Wrap.around(1), Wrap.around(2), Wrap.around(3));
+    assertThat(wrappedIntegerList).hasSize(3);
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .describedAs("Lists created with java.util.List.of(E...) are structurally immutable.")
-        .isThrownBy(() -> wrapperList.add(new Wrapper(4)));
+        .isThrownBy(() -> wrappedIntegerList.add(Wrap.around(4)));
     assertThatExceptionOfType(UnsupportedOperationException.class)
         .describedAs("Elements can't be replaced due to structural immutability")
-        .isThrownBy(() -> wrapperList.set(0, new Wrapper(5)));
+        .isThrownBy(() -> wrappedIntegerList.set(0, Wrap.around(5)));
     assertThatNoException()
         .describedAs("The elements of the list can be modified as long as they are not immutable.")
-        .isThrownBy(() -> wrapperList.get(0).setValue(9));
+        .isThrownBy(() -> wrappedIntegerList.get(0).reWrap(9));
   }
 
   @Test
