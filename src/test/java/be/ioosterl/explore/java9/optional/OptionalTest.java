@@ -31,17 +31,76 @@ public class OptionalTest {
   void ifPresentOrElseWithPresent() {
     Optional<String> nonEmptyOptional = Optional.of("Java 9");
     nonEmptyOptional.ifPresentOrElse(this::sayHiTo, () -> sayHiTo("World"));
-    assertThat(standardOutCaptured.toString()).isEqualTo("Hello Java 9");
+    assertThat(getCaptupredOutputTrimmed()).isEqualTo("Hello Java 9");
   }
 
   @Test
   void ifPresentOrElseWithEmpty() {
     Optional<String> emptyOptional = Optional.empty();
     emptyOptional.ifPresentOrElse(this::sayHiTo, () -> sayHiTo("World"));
-    assertThat(standardOutCaptured.toString()).isEqualTo("Hello World");
+    assertThat(getCaptupredOutputTrimmed()).isEqualTo("Hello World");
   }
 
-  private void sayHiTo(String name) {
-    System.out.print("Hello " + name);
+  @Test
+  void orWithNonEmptyOptional() {
+    Optional.of("Java 9")
+        .or(() -> Optional.of("World"))
+        .ifPresent(this::sayHiTo);
+    assertThat(getCaptupredOutputTrimmed()).isEqualTo("Hello Java 9");
   }
+
+  @Test
+  void orWithEmptyOptionalPreJava9() {
+    sayHiTo(Optional.<String>empty()
+        .orElse("World"));
+    assertThat(getCaptupredOutputTrimmed()).isEqualTo("Hello World");
+  }
+
+  @Test
+  void orWithEmptyOptional() {
+    Optional.empty()
+        .or(() -> Optional.of("World"))
+        .ifPresent(s -> System.out.println("Hello " + s));
+    assertThat(getCaptupredOutputTrimmed()).isEqualTo("Hello World");
+  }
+
+  @Test
+  void orWithMultipleEmptyOptionalsPreJava9() {
+    Optional<String> first = Optional.empty();
+    Optional<String> second = Optional.empty();
+    Optional<String> third = Optional.empty();
+    Optional<String> fourth = Optional.of("World");
+    Optional<String> chosen;
+    if (first.isPresent()) {
+      chosen = first;
+    } else if (second.isPresent()) {
+      chosen = second;
+    } else if (third.isPresent()) {
+      chosen = third;
+    }  else {
+      chosen = fourth;
+    }
+    chosen.ifPresent(this::sayHiTo);
+    assertThat(getCaptupredOutputTrimmed()).isEqualTo("Hello World");
+  }
+
+  @Test
+  void orWithMultipleEmptyOptionals() {
+    Optional.empty()
+        .or(Optional::empty)
+        .or(Optional::empty)
+        .or(() -> Optional.of("World"))
+        .ifPresent(System.out::println);
+    assertThat(getCaptupredOutputTrimmed()).isEqualTo("Hello World");
+  }
+
+
+  private void sayHiTo(String name) {
+    System.out.println("Hello " + name);
+  }
+
+  private String getCaptupredOutputTrimmed() {
+    return standardOutCaptured.toString().trim();
+  }
+
 }
