@@ -1,4 +1,4 @@
-package be.ioosterl.explore.java9;
+package be.ioosterl.explore.java9.collectionfactorymethods;
 
 import org.junit.jupiter.api.Test;
 
